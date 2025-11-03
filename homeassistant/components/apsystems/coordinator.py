@@ -79,4 +79,17 @@ class ApSystemsDataCoordinator(DataUpdateCoordinator[ApSystemsSensorData]):
             raise UpdateFailed(
                 translation_domain=DOMAIN, translation_key="inverter_error"
             ) from None
+        except (TimeoutError, ClientConnectionError) as e:
+            if datetime.now().hour == ALLOWED_CONNECTION_ERROR_HOUR:
+                raise e
+            LOGGER.debug(
+                "The inverter was unavialable while fetching data from the inverter, using the last known data",
+                exc_info=True,
+            )
+            return self.data
         return ApSystemsSensorData(output_data=output_data, alarm_info=alarm_info)
+
+    from datetime import datetime
+    from aiohttp.client_exceptions import ClientConnectionError
+
+    ALLOWED_CONNECTION_ERROR_HOUR = 14
