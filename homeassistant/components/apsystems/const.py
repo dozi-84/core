@@ -3,5 +3,5 @@
 from logging import Logger, getLogger
 
 LOGGER: Logger = getLogger(__package__)
-DOMAIN = "apsystems"
+DOMAIN = "apsystems - edit"
 DEFAULT_PORT = 8050
